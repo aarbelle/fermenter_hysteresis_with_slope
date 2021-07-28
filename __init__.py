@@ -9,7 +9,7 @@ from modules.core.baseview import BaseView
 
 
 @cbpi.fermentation_controller
-class Hysteresis(FermenterController):
+class HysteresisWithSlope(FermenterController):
 
     heater_offset_min = Property.Number("Heater Offset ON", True, 0, description="Offset as decimal number when the heater is switched on. Should be greater then 'Heater Offset OFF'. For example a value of 2 switches on the heater if the current temperature is 2 degrees below the target temperature")
     heater_offset_max = Property.Number("Heater Offset OFF", True, 0, description="Offset as decimal number when the heater is switched off. Should be smaller then 'Heater Offset ON'. For example a value of 1 switches off the heater if the current temperature is 1 degree below the target temperature")
