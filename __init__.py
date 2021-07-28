@@ -81,10 +81,8 @@ class HysteresisWithSlope(FermenterController):
         cbpi.emit("UPDATE_FERMENTER_TARGET_TEMP", {"id": id, "target_temp": temp})
         return ('', 204)
     
-    
-	def log(self, text):
-		filename = "./logs/fermenter_slope.log"
-		formatted_time = strftime("%Y-%m-%d %H:%M:%S", localtime())
-
-		with open(filename, "a") as file:
-			file.write("%s,%s\n" % (formatted_time, text))
+    def log(self, text):
+	filename = "./logs/fermenter_slope.log"
+	formatted_time = strftime("%Y-%m-%d %H:%M:%S", localtime())
+	with open(filename, "a") as file:
+		file.write("%s,%s\n" % (formatted_time, text))
