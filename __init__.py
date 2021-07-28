@@ -24,8 +24,15 @@ class HysteresisWithSlope(FermenterController):
 
     def run(self):
         while self.is_running():
-            self.update_temp()
             target_temp = self.get_target_temp()
+            self.log('original target temp {}'.format(target_temp))
+            try:
+                self.update_temp()
+            except Exception as err:
+                self.log(err)
+                
+            target_temp = self.get_target_temp()
+            self.log('updated target temp {}'.format(target_temp))
             temp = self.get_temp()
 
             if temp + float(self.heater_offset_min) <= target_temp:
@@ -39,7 +46,7 @@ class HysteresisWithSlope(FermenterController):
 
             if temp <= target_temp + float(self.cooler_offset_max):
                 self.cooler_off()
-
+            
             self.sleep(1)
 
     def update_temp(self):
@@ -73,3 +80,11 @@ class HysteresisWithSlope(FermenterController):
         Fermenter.update(**cbpi.cache.get('fermenter')[id].__dict__)
         cbpi.emit("UPDATE_FERMENTER_TARGET_TEMP", {"id": id, "target_temp": temp})
         return ('', 204)
+    
+    
+	def log(self, text):
+		filename = "./logs/fermenter_slope.log"
+		formatted_time = strftime("%Y-%m-%d %H:%M:%S", localtime())
+
+		with open(filename, "a") as file:
+			file.write("%s,%s\n" % (formatted_time, text))
