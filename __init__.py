@@ -76,8 +76,8 @@ class HysteresisWithSlope(FermenterController):
 	self.log('Duration {}'.format(duration))
         slope = (end_temp-start_temp)/duration
 	self.log('Slope {}'.format(slope))
-	self.log('Time {}, timer start {} duration {} '.format(time.time(), active_step.timer_start, running_time))
-        running_time = (time.time()-active_step.timer_start + running_time)
+	self.log('Time {}, timer start {} duration {} '.format(time.time(), active_step.timer_start, duration))
+        running_time = (time.time()-active_step.timer_start + duration)
 	self.log('Running Time {}'.format(running_time))
         desired_temp = slope*running_time + start_temp
 	self.log('Desired Temp {}'.format(desired_temp))
