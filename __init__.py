@@ -36,7 +36,9 @@ class HysteresisWithSlope(FermenterController):
             target_temp = self.get_target_temp()
             self.log('updated target temp {}'.format(target_temp))
             temp = self.get_temp()
-
+            self.log('current temp {}'.format(temp))
+	    if temp is None:
+		continue
             if temp + float(self.heater_offset_min) <= target_temp:
                 self.heater_on(100)
 
