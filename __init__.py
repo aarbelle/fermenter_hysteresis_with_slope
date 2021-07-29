@@ -6,7 +6,7 @@ import time
 from flask import request
 from flask_classy import route
 from modules.core.baseview import BaseView
-from time import strftime
+from time import strftime, localtime
 
 @cbpi.fermentation_controller
 class HysteresisWithSlope(FermenterController):
