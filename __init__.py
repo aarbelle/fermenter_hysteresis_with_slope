@@ -7,7 +7,7 @@ from flask import request
 from flask_classy import route
 from modules.core.baseview import BaseView
 from time import strftime, localtime
-import tracback 
+
 @cbpi.fermentation_controller
 class HysteresisWithSlope(FermenterController):
 
@@ -31,7 +31,7 @@ class HysteresisWithSlope(FermenterController):
             try:
                 self.update_temp()
             except Exception as err:
-                self.log(traceback.print_exc())
+                self.log(err)
                 
             target_temp = self.get_target_temp()
             self.log('updated target temp {}'.format(target_temp))
@@ -55,23 +55,31 @@ class HysteresisWithSlope(FermenterController):
 
     def update_temp(self):
         active_step = next_step = None
-
+	
         for idx, s in enumerate(cbpi.cache.get('fermenter')[self.fermenter_id].steps):
             if s.state == 'A':
                 active_step = s
+		self.log('Found Active Step {}'.format(s))
             if active_step is not None:
                 next_step = s
+		self.log('Found Next Step {}'.format(s))
                 break
 
         if active_step is None or next_step is None:
             return
         start_temp = active_step.temp
         end_temp = next_step.temp
+	self.log('Start Temp {}. End Temp {}'.format(start_temp, end_temp))
+	self.log('Days: {}, Hours{}, Min{}'.format(active_step.days,active_step.hours,active_step.minutes))
         duration = ((active_step.days*24 + active_step.hours)*60 + active_step.minutes)*60
+	self.log('Duration {}'.format(duration))
         slope = (end_temp-start_temp)/duration
         running_time = (time.time()-active_step.timer_start + duration)
+	self.log('Running Time {}'.format(running_time))
         desired_temp = slope*running_time + start_temp
+	self.log('Desired Temp {}'.format(desired_temp))
         self.postTargetTemp(self.fermenter_id, desired_temp)
+	self.log('Updated Desired Temp {}'.format(desired_temp))
 
 
     @route('/<int:id>/targettemp/<temp>', methods=['POST'])
