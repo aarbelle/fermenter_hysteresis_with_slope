@@ -1,5 +1,5 @@
-from modules import cbpi, DBModel, cbpi, get_db
-from modules.core.controller import KettleController, FermenterController
+from modules import cbpi, DBModel, get_db
+from modules.core.controller import FermenterController
 from modules.core.props import Property
 from modules.fermenter import Fermenter
 import time
