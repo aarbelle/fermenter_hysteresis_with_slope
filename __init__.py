@@ -16,15 +16,13 @@ class HysteresisWithSlope(FermenterController):
     cooler_offset_min = Property.Number("Cooler Offset ON", True, 0, description="Offset as decimal number when the cooler is switched on. Should be greater then 'Cooler Offset OFF'. For example a value of 2 switches on the cooler if the current temperature is 2 degrees above the target temperature")
     cooler_offset_max = Property.Number("Cooler Offset OFF", True, 0, description="Offset as decimal number when the cooler is switched off. Should be less then 'Cooler Offset ON'. For example a value of 1 switches off the cooler if the current temperature is 1 degree above the target temperature")
     cooler_delay_min = Property.Number("Cooler Delay (Min)", True, 3, description="Delay (in minutes) to turn on cooler after last turn off")
-
+    cooler_delay = self.cooler_delay_min*60
+    last_cooler_off = time.time() - cooler_delay	
     def stop(self):
         super(FermenterController, self).stop()
 
         self.heater_off()
         self.cooler_off()
-	self.cooler_delay = self.cooler_delay_min*60
-	self.last_cooler_off = time.time() - self.cooler_delay
-
 
     @cbpi.try_catch('Fermenter')
     def run(self):
