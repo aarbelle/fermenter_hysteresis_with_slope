@@ -60,7 +60,7 @@ class HysteresisWithSlope(FermenterController):
             if active_step is not None:
                 next_step = s
 		self.log('Found Next Step {}'.format(s))
-                breaks
+                break
             if s.state == 'A':
                 active_step = s
 		self.log('Found Active Step {}'.format(s))
