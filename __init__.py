@@ -65,11 +65,11 @@ class HysteresisWithSlope(FermenterController):
 
         if active_step is None or next_step is None:
             return
-        start_temp = active_step['temp']
-        end_temp = next_step['temp']
-        duration = ((active_step['days']*24 + active_step['hours'])*60 + active_step['minutes'])*60
+        start_temp = active_step.temp
+        end_temp = next_step.temp
+        duration = ((active_step.days*24 + active_step.hours)*60 + active_step.minutes)*60
         slope = (end_temp-start_temp)/duration
-        running_time = (time.time()-active_step['start'])
+        running_time = (time.time()-active_step.timer_start + duration)
         desired_temp = slope*running_time + start_temp
         self.postTargetTemp(self.fermenter_id, desired_temp)
 
