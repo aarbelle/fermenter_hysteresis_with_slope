@@ -7,7 +7,7 @@ from flask import request
 from flask_classy import route
 from modules.core.baseview import BaseView
 from time import strftime, localtime
-
+import tracback 
 @cbpi.fermentation_controller
 class HysteresisWithSlope(FermenterController):
 
@@ -31,7 +31,7 @@ class HysteresisWithSlope(FermenterController):
             try:
                 self.update_temp()
             except Exception as err:
-                self.log(err)
+                self.log(traceback.print_exc())
                 
             target_temp = self.get_target_temp()
             self.log('updated target temp {}'.format(target_temp))
