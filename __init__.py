@@ -57,13 +57,14 @@ class HysteresisWithSlope(FermenterController):
         active_step = next_step = None
 	
         for idx, s in enumerate(cbpi.cache.get('fermenter')[self.fermenter_id].steps):
-            if s.state == 'A':
-                active_step = s
-		self.log('Found Active Step {}'.format(s))
             if active_step is not None:
                 next_step = s
 		self.log('Found Next Step {}'.format(s))
-                break
+                breaks
+            if s.state == 'A':
+                active_step = s
+		self.log('Found Active Step {}'.format(s))
+
 
         if active_step is None or next_step is None:
             return
