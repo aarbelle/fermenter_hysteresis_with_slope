@@ -23,6 +23,7 @@ class HysteresisWithSlope(FermenterController):
 
         self.heater_off()
         self.cooler_off()
+	self.last_cooler_off = time.time()
 
     @cbpi.try_catch('Fermenter')
     def run(self):
