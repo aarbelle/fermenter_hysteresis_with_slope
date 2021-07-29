@@ -48,7 +48,7 @@ class HysteresisWithSlope(FermenterController):
 
             if temp + float(self.heater_offset_max) >= target_temp:
                 self.heater_off()
-
+            self.log('current time: {}, last off + delay {}'.format(time.time(), (self.last_cooler_off + self.cooler_delay)))
             if temp >= target_temp + float(self.cooler_offset_min) and time.time() > (self.last_cooler_off + self.cooler_delay):
                 self.cooler_on(100)
 
