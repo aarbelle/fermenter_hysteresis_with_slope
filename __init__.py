@@ -22,6 +22,7 @@ class HysteresisWithSlope(FermenterController):
         self.heater_off()
         self.cooler_off()
 
+    @cbpi.try_catch('Fermenter')
     def run(self):
 	self.log('running')
         while self.is_running():
