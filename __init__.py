@@ -23,6 +23,7 @@ class HysteresisWithSlope(FermenterController):
         self.cooler_off()
 
     def run(self):
+	self.log('running')
         while self.is_running():
             target_temp = self.get_target_temp()
             self.log('original target temp {}'.format(target_temp))
