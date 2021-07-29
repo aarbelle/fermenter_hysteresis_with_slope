@@ -28,7 +28,7 @@ class HysteresisWithSlope(FermenterController):
     def run(self):
         if self.cooler_delay is None:
 		self.cooler_delay = float(self.cooler_delay_min)*60
-    		self.last_cooler_off = time.time() - self.cooler_delay	
+    		self.last_cooler_off = 0.	
 	self.log('running')
         while self.is_running():
             target_temp = self.get_target_temp()
