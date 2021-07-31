@@ -38,6 +38,7 @@ class HysteresisWithSlope(FermenterController):
                 self.update_temp()
             except Exception as err:
             #    self.log(err)
+		pass
                 
             target_temp = self.get_target_temp()
             #self.log('updated target temp {}'.format(target_temp))
