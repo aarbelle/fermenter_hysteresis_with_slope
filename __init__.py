@@ -30,19 +30,19 @@ class HysteresisWithSlope(FermenterController):
         if self.cooler_delay is None:
 		self.cooler_delay = float(self.cooler_delay_min)*60
     		self.last_cooler_off = 0.	
-	self.log('running')
+	#self.log('running')
         while self.is_running():
             target_temp = self.get_target_temp()
-            self.log('original target temp {}'.format(target_temp))
+            #self.log('original target temp {}'.format(target_temp))
             try:
                 self.update_temp()
             except Exception as err:
-                self.log(err)
+            #    self.log(err)
                 
             target_temp = self.get_target_temp()
-            self.log('updated target temp {}'.format(target_temp))
+            #self.log('updated target temp {}'.format(target_temp))
             temp = self.get_temp()
-            self.log('current temp {}'.format(temp))
+            #self.log('current temp {}'.format(temp))
 	    if temp is None:
 		continue
             if temp + float(self.heater_offset_min) <= target_temp:
@@ -50,7 +50,7 @@ class HysteresisWithSlope(FermenterController):
 
             if temp + float(self.heater_offset_max) >= target_temp:
                 self.heater_off()
-            self.log('current time: {}, last off + delay {}'.format(time.time(), (self.last_cooler_off + self.cooler_delay)))
+            #self.log('current time: {}, last off + delay {}'.format(time.time(), (self.last_cooler_off + self.cooler_delay)))
             if temp >= target_temp + float(self.cooler_offset_min) and time.time() > (self.last_cooler_off + self.cooler_delay):
                 self.cooler_on(100)
 
@@ -66,31 +66,31 @@ class HysteresisWithSlope(FermenterController):
         for idx, s in enumerate(cbpi.cache.get('fermenter')[self.fermenter_id].steps):
             if active_step is not None:
                 next_step = s
-		self.log('Found Next Step {}'.format(s))
+		#self.log('Found Next Step {}'.format(s))
                 break
             if s.state == 'A':
                 active_step = s
-		self.log('Found Active Step {}'.format(s))
+		#self.log('Found Active Step {}'.format(s))
 
 
         if active_step is None or next_step is None:
             return
         start_temp = active_step.temp
         end_temp = next_step.temp
-	self.log('Start Temp {}. End Temp {}'.format(start_temp, end_temp))
-	self.log('Days: {}, Hours{}, Min{}'.format(active_step.days,active_step.hours,active_step.minutes))
+	#self.log('Start Temp {}. End Temp {}'.format(start_temp, end_temp))
+	#self.log('Days: {}, Hours{}, Min{}'.format(active_step.days,active_step.hours,active_step.minutes))
         duration = float(((active_step.days*24 + active_step.hours)*60 + active_step.minutes)*60)
-	self.log('Duration {}'.format(duration))
+	#self.log('Duration {}'.format(duration))
         slope = float(end_temp-start_temp)/duration
-	self.log('Slope {}'.format(slope))
-	self.log('Time {}, timer start {} duration {} '.format(time.time(), active_step.timer_start, duration))
+	#self.log('Slope {}'.format(slope))
+	#self.log('Time {}, timer start {} duration {} '.format(time.time(), active_step.timer_start, duration))
         running_time = (time.time()-active_step.timer_start + duration)
-	self.log('Running Time {}'.format(running_time))
+	#self.log('Running Time {}'.format(running_time))
         desired_temp = round((slope*running_time + start_temp)*100)/100
-	self.log('Desired Temp {}'.format(desired_temp))
+	#self.log('Desired Temp {}'.format(desired_temp))
 	with cbpi.app.app_context():
 	        self.postTargetTemp(self.fermenter_id, desired_temp)
-	self.log('Updated Desired Temp {}'.format(desired_temp))
+	#self.log('Updated Desired Temp {}'.format(desired_temp))
 
 
     @route('/<int:id>/targettemp/<temp>', methods=['POST'])
