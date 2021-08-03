@@ -89,6 +89,8 @@ class HysteresisWithSlope(FermenterController):
 	#self.log('Running Time {}'.format(running_time))
         desired_temp = round((slope*running_time + start_temp)*100)/100
 	#self.log('Desired Temp {}'.format(desired_temp))
+	if desired_temp == self.get_target_temp():
+		return
 	with cbpi.app.app_context():
 	        self.postTargetTemp(self.fermenter_id, desired_temp)
 	#self.log('Updated Desired Temp {}'.format(desired_temp))
