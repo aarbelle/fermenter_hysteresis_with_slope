@@ -18,6 +18,8 @@ class HysteresisWithSlope(FermenterController):
     cooler_delay_min = Property.Number("Cooler Delay (Min)", True, 3, description="Delay (in minutes) to turn on cooler after last turn off")
     cooler_delay = None
     last_cooler_off = None
+    reached_temp = False
+    direction = None
     def stop(self):
         super(FermenterController, self).stop()
 
@@ -32,6 +34,17 @@ class HysteresisWithSlope(FermenterController):
     		self.last_cooler_off = 0.	
 	#self.log('running')
         while self.is_running():
+	    if self.reached_temp:
+		heater_offset_min = self.heater_offset_min
+		heater_offset_max = self.heater_offset_max
+		cooler_offset_max = self.cooler_offset_max
+		cooler_offset_min = self.cooler_offset_min
+	    else:
+		heater_offset_min = 0
+		heater_offset_max = 0
+		cooler_offset_max = 0
+		cooler_offset_min = 0
+		
             target_temp = self.get_target_temp()
             #self.log('original target temp {}'.format(target_temp))
             try:
@@ -43,19 +56,30 @@ class HysteresisWithSlope(FermenterController):
             target_temp = self.get_target_temp()
             #self.log('updated target temp {}'.format(target_temp))
             temp = self.get_temp()
+	    if not self.reached_temp and self.direction is None:
+		if temp < target_temp:
+	            self.direction = 'up'
+		elif temp > target_temp:
+	            self.direction = 'down'
+		else:
+		    self.reached_temp = True
+	    elif not self.reached_temp:
+		if (self.direction == 'up' and temp >= target_temp) or (self.direction == 'down' and temp <= target_temp):
+			self.reached_temp = True
+	
             #self.log('current temp {}'.format(temp))
 	    if temp is None:
 		continue
-            if temp + float(self.heater_offset_min) <= target_temp:
+            if temp + float(heater_offset_min) <= target_temp:
                 self.heater_on(100)
 
-            if temp + float(self.heater_offset_max) >= target_temp:
+            if temp + float(heater_offset_max) >= target_temp and self.reached_temp:
                 self.heater_off()
             #self.log('current time: {}, last off + delay {}'.format(time.time(), (self.last_cooler_off + self.cooler_delay)))
-            if temp >= target_temp + float(self.cooler_offset_min) and time.time() > (self.last_cooler_off + self.cooler_delay):
+            if temp >= target_temp + float(cooler_offset_min) and time.time() > (self.last_cooler_off + self.cooler_delay):
                 self.cooler_on(100)
 
-            if temp <= target_temp + float(self.cooler_offset_max):
+            if temp <= target_temp + float(cooler_offset_max) and self.reached_temp:
                 self.cooler_off()
 		self.last_cooler_off = time.time()
             
